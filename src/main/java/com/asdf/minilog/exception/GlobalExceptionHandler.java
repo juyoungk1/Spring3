@@ -37,8 +37,8 @@ public class GlobalExceptionHandler {
                             responseCode = "500",
                             description = "Internal server error")
             })
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex){
+    @ExceptionHandler(ArticleNotFoundException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(ArticleNotFoundException ex){
         return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
     }
 

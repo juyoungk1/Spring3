@@ -6,10 +6,7 @@ import lombok.NonNull;
 
 @Data
 @Builder
-public class UserResponseDto {
-    @NonNull
-    private Long id;
-
-    @NonNull
-    private String username;
+public class FollowResponseDto {
+    @NonNull private Long followerId;
+    @NonNull private Long followeeId;
 }
