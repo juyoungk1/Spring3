@@ -7,9 +7,7 @@ import lombok.NonNull;
 @Data
 @Builder
 public class UserResponseDto {
-    @NonNull
-    private Long id;
+  @NonNull private Long id;
 
-    @NonNull
-    private String username;
+  @NonNull private String username;
 }
