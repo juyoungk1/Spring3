@@ -25,10 +25,10 @@ public class UserService {
   }
 
   @Transactional(readOnly = true)
-  public List<UserResponseDto> getUser() {
+  public List<UserResponseDto> getUsers() {
     return userRepository.findAll().stream()
-        .map(EntityDtoMapper::toDto)
-        .collect(Collectors.toList());
+            .map(EntityDtoMapper::toDto)
+            .collect(Collectors.toList());
   }
 
   @Transactional(readOnly = true)
@@ -42,23 +42,22 @@ public class UserService {
     }
 
     User savedUser =
-        userRepository.save(
-            User.builder()
-                .username(userRequestDto.getUsername())
-                .password(userRequestDto.getPassword())
-                .build());
-
+            userRepository.save(
+                    User.builder()
+                            .username(userRequestDto.getUsername())
+                            .password(userRequestDto.getPassword())
+                            .build());
     return EntityDtoMapper.toDto(savedUser);
   }
 
   public UserResponseDto updateUser(Long userId, UserRequestDto userRequestDto) {
     User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(
-                () ->
-                    new UserNotFoundException(
-                        String.format("해당 아이디(%d)를 가진 사용자를 찾을 수 " + "없습니다.", userId)));
+            userRepository
+                    .findById(userId)
+                    .orElseThrow(
+                            () ->
+                                    new UserNotFoundException(
+                                            String.format("해당 아이디(%d)를 가진 사용자를 찾을 수 없습니다.", userId)));
     user.setUsername(userRequestDto.getUsername());
     user.setPassword(userRequestDto.getPassword());
 
@@ -68,12 +67,12 @@ public class UserService {
 
   public void deleteUser(Long userId) {
     User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(
-                () ->
-                    new UserNotFoundException(
-                        String.format("해당 아이디(%d)를 가진 사용자를 찾을 수" + " 없습니다.", userId)));
-    userRepository.delete(user);
+            userRepository
+                    .findById(userId)
+                    .orElseThrow(
+                            () ->
+                                    new UserNotFoundException(
+                                            String.format("해당 아이디(%d)를 가진 사용자를 찾을 수 없습니다.", userId)));
+    userRepository.deleteById(user.getId());
   }
 }

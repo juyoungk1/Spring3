@@ -25,8 +25,8 @@ public class FollowController {
   @PostMapping
   @Operation(summary = "팔로우")
   @ApiResponses({
-    @ApiResponse(responseCode = "200", description = "성공"),
-    @ApiResponse(responseCode = "404", description = "사용자 없음")
+          @ApiResponse(responseCode = "200", description = "성공"),
+          @ApiResponse(responseCode = "404", description = "사용자 없음")
   })
   public ResponseEntity<FollowResponseDto> follow(@RequestBody FollowRequestDto request) {
     Long followerId = request.getFollowerId();
@@ -36,11 +36,23 @@ public class FollowController {
     return ResponseEntity.ok(follow);
   }
 
-  @DeleteMapping("/{followerId}")
+  @DeleteMapping("/{followerId}/{followeeId}")
   @Operation(summary = "언팔로우")
   @ApiResponses({
-    @ApiResponse(responseCode = "200", description = "성공"),
-    @ApiResponse(responseCode = "404", description = "사용자 없음")
+          @ApiResponse(responseCode = "200", description = "성공"),
+          @ApiResponse(responseCode = "404", description = "사용자 없음")
+  })
+  public ResponseEntity<Void> unfollow(
+          @PathVariable Long followerId, @PathVariable Long followeeId) {
+    followService.unfollow(followerId, followeeId);
+    return ResponseEntity.ok().build();
+  }
+
+  @GetMapping("/{followerId}")
+  @Operation(summary = "팔로잉 목록 조회")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "성공"),
+          @ApiResponse(responseCode = "404", description = "사용자 없음")
   })
   public ResponseEntity<List<FollowResponseDto>> getFollowList(@PathVariable Long followerId) {
     List<FollowResponseDto> follows = followService.getFollowList(followerId);

@@ -26,14 +26,14 @@ public class UserController {
   @Operation(summary = "사용자 목록 조회")
   @ApiResponses({@ApiResponse(responseCode = "200", description = "성공")})
   public ResponseEntity<Iterable<UserResponseDto>> getUsers() {
-    return ResponseEntity.ok(userService.getUser());
+    return ResponseEntity.ok(userService.getUsers());
   }
 
   @GetMapping("/{userId}")
   @Operation(summary = "사용자 조회")
   @ApiResponses({
-    @ApiResponse(responseCode = "200", description = "성공"),
-    @ApiResponse(responseCode = "404", description = "사용자 없음")
+          @ApiResponse(responseCode = "200", description = "성공"),
+          @ApiResponse(responseCode = "404", description = "사용자 없음")
   })
   public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long userId) {
     Optional<UserResponseDto> user = userService.getUserById(userId);
@@ -51,11 +51,11 @@ public class UserController {
   @PutMapping("/{userId}")
   @Operation(summary = "사용자 수정")
   @ApiResponses({
-    @ApiResponse(responseCode = "200", description = "성공"),
-    @ApiResponse(responseCode = "404", description = "사용자 없음")
+          @ApiResponse(responseCode = "200", description = "성공"),
+          @ApiResponse(responseCode = "404", description = "사용자 없음")
   })
   public ResponseEntity<UserResponseDto> updateUser(
-      @PathVariable Long userId, @RequestBody UserRequestDto updatedUser) {
+          @PathVariable Long userId, @RequestBody UserRequestDto updatedUser) {
     UserResponseDto user = userService.updateUser(userId, updatedUser);
     return ResponseEntity.ok(user);
   }
@@ -63,8 +63,8 @@ public class UserController {
   @DeleteMapping("/{userId}")
   @Operation(summary = "사용자 삭제")
   @ApiResponses({
-    @ApiResponse(responseCode = "204", description = "성공"),
-    @ApiResponse(responseCode = "404", description = "사용자 없음")
+          @ApiResponse(responseCode = "204", description = "성공"),
+          @ApiResponse(responseCode = "404", description = "사용자 없음")
   })
   public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
     userService.deleteUser(userId);
