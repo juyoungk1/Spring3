@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>피드 - 미니 블로그</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .card { background: white; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+        textarea { width: 100%; padding: 10px; box-sizing: border-box; }
+        button { padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; background-color: #007bff; color: white; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h2 id="welcome-msg">환영합니다</h2>
+    <button onclick="logout()" style="background-color: #6c757d;">로그아웃</button>
+</div>
+
+<div style="margin-bottom: 20px;">
+    <button onclick="loadArticles('my')">내 글</button>
+    <button onclick="loadArticles('feed')">친구 글(피드)</button>
+</div>
+
+<div class="card">
+    <textarea id="content" placeholder="무슨 일이 있었나요?"></textarea>
+    <button onclick="writeArticle()" style="margin-top:5px;">작성</button>
+</div>
+
+<div id="list"></div>
+
+<script>
+    const BASE_URL = '/api/v1';
+    // 저장된 ID 가져오기
+    const myId = localStorage.getItem('userId');
+    const myName = localStorage.getItem('userName');
+
+    // 로그인 안했으면 로그인 페이지로 쫓아내기
+    if (!myId) {
+        alert('로그인이 필요합니다.');
+        location.href = 'login.html';
+    }
+
+    document.getElementById('welcome-msg').innerText = `👤 ${myName}님의 피드`;
+
+    // 시작하면 '내 글' 먼저 보여주기
+    window.onload = () => loadArticles('my');
+
+    async function loadArticles(type) {
+        let url = (type === 'my')
+            ? `${BASE_URL}/article?authorId=${myId}`
+            : `${BASE_URL}/feed?followerId=${myId}`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const listDiv = document.getElementById('list');
+        listDiv.innerHTML = '';
+
+        if(data.length === 0) listDiv.innerHTML = '<p>글이 없습니다.</p>';
+
+        data.forEach(article => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.innerHTML = `<p>${article.content}</p><small style="color:grey">작성자 ID: ${article.authorId}</small>`;
+            listDiv.appendChild(div);
+        });
+    }
+
+    async function writeArticle() {
+        const content = document.getElementById('content').value;
+        if(!content) return;
+        await fetch(`${BASE_URL}/article`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ authorId: myId, content })
+        });
+        document.getElementById('content').value = '';
+        loadArticles('my');
+    }
+
+    function logout() {
+        localStorage.clear(); // 저장된 ID 삭제
+        location.href = 'login.html'; // 로그인 페이지로 이동
+    }
+</script>
+</body>
+</html>

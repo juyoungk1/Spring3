@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인 - 미니 블로그</title>
+    <style>
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f5f5f5; margin: 0; font-family: sans-serif; }
+        .card { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; width: 300px; }
+        .user-btn { display: block; width: 100%; padding: 10px; margin-bottom: 5px; background: white; border: 1px solid #ddd; cursor: pointer; text-align: left; }
+        .user-btn:hover { background-color: #f1f1f1; }
+        .signup-btn { margin-top: 20px; color: #007bff; text-decoration: none; font-size: 14px; display: inline-block; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>👋 로그인</h1>
+    <p style="color:#666; font-size:14px;">아이디를 클릭하면 로그인됩니다.</p>
+
+    <div id="user-list" style="text-align:left; max-height: 300px; overflow-y: auto;">
+        로딩중...
+    </div>
+
+    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
+    <div>
+        아직 계정이 없으신가요?<br>
+        <a href="signup.html" class="signup-btn">👉 회원가입 하러 가기</a>
+    </div>
+</div>
+
+<script>
+    const BASE_URL = '/api/v1';
+
+    window.onload = loadUsers;
+
+    async function loadUsers() {
+        try {
+            const res = await fetch(`${BASE_URL}/user`);
+            const users = await res.json();
+            const list = document.getElementById('user-list');
+            list.innerHTML = '';
+
+            if(users.length === 0) {
+                list.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">등록된 유저가 없습니다.<br>회원가입을 진행해주세요.</div>';
+                return;
+            }
+
+            users.forEach(user => {
+                const btn = document.createElement('button');
+                btn.className = 'user-btn';
+                btn.innerHTML = `👤 <b>${user.name}</b> <small>(ID: ${user.id})</small>`;
+                btn.onclick = () => {
+                    localStorage.setItem('userId', user.id);
+                    localStorage.setItem('userName', user.name);
+                    location.href = 'feed.html';
+                };
+                list.appendChild(btn);
+            });
+        } catch (e) {
+            document.getElementById('user-list').innerText = '서버 연결 실패';
+        }
+    }
+</script>
+</body>
+</html>
